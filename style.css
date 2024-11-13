@@ -9,3 +9,9 @@
   height: 70px;
   width: 70px;
 }
+
+.score {
+  font-size: 3rem;
+  font-family: monospace;
+  font-weight: 800;
+}

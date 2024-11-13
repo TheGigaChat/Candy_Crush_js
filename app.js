@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const width = 8; // width === height, so we don't need to init h
   const squares = [];
   let score = 0;
+  const scoreDiv = document.querySelector(".score");
 
   const candyColors = ["red", "yellow", "orange", "purple", "green", "blue"];
 
@@ -77,11 +78,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Drop candies after a match
+  function moveCandies(i = 0) {
+    for (i = 0; i < squares.length; i++) {
+      if (squares[i].style.backgroundColor === "") {
+        // case 8, 9, 10  forEach, if isBlank => if i - 8 exist && have the color => square[i].color =  square[i - 8].color => moveCandies(i)
+        const indexOfSquareHigher = i - width;
+        if (indexOfSquareHigher > 0) {
+          squares[i].style.backgroundColor =
+            squares[indexOfSquareHigher].style.backgroundColor;
+          squares[indexOfSquareHigher].style.backgroundColor = "";
+          return moveCandies(i);
+        } else {
+          // 0, 1, 2  forEach, if isBlank => give a random color
+          let randomColor = Math.floor(Math.random() * candyColors.length);
+          squares[i].style.backgroundColor = candyColors[randomColor];
+          return;
+        }
+      }
+    }
+  }
+
   //Checking for matches
   function checkTreeRow() {
-    for (let i = 0; i < 61; i++) {
+    for (let i = 0; i < 62; i++) {
       const row = [squares[i], squares[i + 1], squares[i + 2]];
       const desiredColor = squares[i].style.backgroundColor;
+      const isBlank = squares[i].style.backgroundColor === "";
 
       //Check if the i is an index of the invalid square
       const doNotCheckIndexes = [
@@ -90,27 +113,35 @@ document.addEventListener("DOMContentLoaded", () => {
       if (doNotCheckIndexes.includes(i)) continue;
 
       if (
-        row.every((square) => square.style.backgroundColor === desiredColor)
+        row.every(
+          (square) => square.style.backgroundColor === desiredColor && !isBlank
+        )
       ) {
         row.forEach((square) => (square.style.backgroundColor = ""));
+        score += 3;
       }
     }
   }
   function checkFourRow() {
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 61; i++) {
       const row = [squares[i], squares[i + 1], squares[i + 2], squares[i + 3]];
       const desiredColor = squares[i].style.backgroundColor;
+      const isBlank = squares[i].style.backgroundColor === "";
 
       //Check if the i is an index of the invalid square
       const doNotCheckIndexes = [
-        6, 7, 14, 15, 22, 23, 30, 31, 38, 39, 46, 47, 54, 55,
+        5, 6, 7, 13, 14, 15, 21, 22, 23, 29, 30, 31, 37, 38, 39, 45, 46, 47, 53,
+        54, 55,
       ];
       if (doNotCheckIndexes.includes(i)) continue;
 
       if (
-        row.every((square) => square.style.backgroundColor === desiredColor)
+        row.every(
+          (square) => square.style.backgroundColor === desiredColor && !isBlank
+        )
       ) {
         row.forEach((square) => (square.style.backgroundColor = ""));
+        score += 4;
       }
     }
   }
@@ -122,19 +153,51 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function checkTreeColumn() {
-    for (let i = 0; i < 47; i++) {
+    for (let i = 0; i < 48; i++) {
       const column = [squares[i], squares[i + width], squares[i + width * 2]];
       const desiredColor = squares[i].style.backgroundColor;
+      const isBlank = squares[i].style.backgroundColor === "";
       if (
-        column.every((square) => square.style.backgroundColor === desiredColor)
+        column.every(
+          (square) => square.style.backgroundColor === desiredColor && !isBlank
+        )
       ) {
         column.forEach((square) => (square.style.backgroundColor = ""));
+        score += 3;
       }
     }
   }
+  function checkFourColumn() {
+    for (let i = 0; i < 40; i++) {
+      const column = [
+        squares[i],
+        squares[i + width],
+        squares[i + width * 2],
+        squares[i + width * 3],
+      ];
+      const desiredColor = squares[i].style.backgroundColor;
+      const isBlank = squares[i].style.backgroundColor === "";
+      if (
+        column.every(
+          (square) => square.style.backgroundColor === desiredColor && !isBlank
+        )
+      ) {
+        column.forEach((square) => (square.style.backgroundColor = ""));
+        score += 4;
+      }
+    }
+  }
+  function updateScore() {
+    scoreDiv.textContent = score;
+  }
+
   window.setInterval(() => {
+    moveCandies();
     checkFourRow();
     checkTreeRow();
+    checkFourColumn();
     checkTreeColumn();
+    updateScore();
+    // console.log(score);
   }, 100);
 });
