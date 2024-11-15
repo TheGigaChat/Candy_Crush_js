@@ -161,12 +161,64 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   }
-  function checkRows(i) {
-    const rows = [];
-    if (i < squares.length) {
-      //Write a recursive function to check all rows
+  function checkRows(i = 0) {
+    if (i < 56) {
+      //index exists
+      const row = [];
+      for (let j = i; j < i + width; j++) {
+        //fill the row
+        row.push(squares[j]);
+      }
+
+      //check for matches
+      let count = 1;
+      row.forEach((curr, index, arr) => {
+        if (index === 0) return;
+        const isLastElement = curr === arr[arr.length - 1];
+        const prev = arr[index - 1];
+        if (
+          curr.style.backgroundImage === prev.style.backgroundImage &&
+          !isLastElement
+        ) {
+          count++;
+        } else {
+          if (count < 3) {
+            count = 1;
+          } else {
+            for (
+              let indexPrevElements = index - 1;
+              indexPrevElements > index - 1 - count;
+              indexPrevElements--
+            ) {
+              arr[indexPrevElements].style.backgroundImage = "";
+            }
+            count = 1;
+          }
+        }
+      });
+    } else {
+      //index does not exist
+      return;
     }
+    // for (let i = 0; i < 56; i += width) {
+    //   const row = [];
+    //   for (let j = i; j < i + width; j++) {
+    //     //fill the row
+    //     row.push(squares[j]);
+    //   }
+
+    //   //check for matchs
+
+    // }
   }
+  //create loop instead of recurtion and fix the logic for the match-finder
+
+  //recursion(prev, curr, i)
+  //colors1[a, a, a, c, d, d, c, c, c] => i=0, count = 1
+  //colors2[a, a, a, a, a, a, c, c, c] => i=0, count = 1
+  //if curr === prev => i++, count++
+  //if curr !== prev OR element is last => if count < 3 => i++, count=1
+  //if curr !== prev OR element is last => if count > 2 => for (from i to i-count) {element.style.backgroundImage = ""} && i++, count=1
 
   function checkTreeColumn() {
     for (let i = 0; i < 48; i++) {
@@ -209,10 +261,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.setInterval(() => {
     moveCandies();
+    checkRows();
     checkFourRow();
     checkTreeRow();
     checkFourColumn();
     checkTreeColumn();
     updateScore();
-  }, 100);
+  }, 10000);
 });
