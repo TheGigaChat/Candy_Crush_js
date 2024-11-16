@@ -161,8 +161,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   }
-  function checkRows(i = 0) {
-    if (i < 56) {
+  function checkRows() {
+    //Instruction of the fuction
+    //colors2[a, a, a, a, a, a, c, c, c] => i=0, count = 1
+    //if curr === prev => i++, count++
+    //if curr !== prev OR element is last => if count < 3 => i++, count=1
+    //if curr !== prev OR element is last => if count > 2 => for (from i to i-count)
+    //{element.style.backgroundImage = ""} && i++, count=1
+    for (let i = 0; i < squares.length; i += width) {
       //index exists
       const row = [];
       for (let j = i; j < i + width; j++) {
@@ -174,6 +180,8 @@ document.addEventListener("DOMContentLoaded", () => {
       let count = 1;
       row.forEach((curr, index, arr) => {
         if (index === 0) return;
+
+        //starts form the pair of curr and prev
         const isLastElement = curr === arr[arr.length - 1];
         const prev = arr[index - 1];
         if (
@@ -182,6 +190,14 @@ document.addEventListener("DOMContentLoaded", () => {
         ) {
           count++;
         } else {
+          if (isLastElement) {
+            if (curr.style.backgroundImage === prev.style.backgroundImage) {
+              count++;
+              index++;
+            }
+          }
+
+          //check the match elements amount
           if (count < 3) {
             count = 1;
           } else {
@@ -196,29 +212,8 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }
       });
-    } else {
-      //index does not exist
-      return;
     }
-    // for (let i = 0; i < 56; i += width) {
-    //   const row = [];
-    //   for (let j = i; j < i + width; j++) {
-    //     //fill the row
-    //     row.push(squares[j]);
-    //   }
-
-    //   //check for matchs
-
-    // }
   }
-  //create loop instead of recurtion and fix the logic for the match-finder
-
-  //recursion(prev, curr, i)
-  //colors1[a, a, a, c, d, d, c, c, c] => i=0, count = 1
-  //colors2[a, a, a, a, a, a, c, c, c] => i=0, count = 1
-  //if curr === prev => i++, count++
-  //if curr !== prev OR element is last => if count < 3 => i++, count=1
-  //if curr !== prev OR element is last => if count > 2 => for (from i to i-count) {element.style.backgroundImage = ""} && i++, count=1
 
   function checkTreeColumn() {
     for (let i = 0; i < 48; i++) {
@@ -262,10 +257,8 @@ document.addEventListener("DOMContentLoaded", () => {
   window.setInterval(() => {
     moveCandies();
     checkRows();
-    checkFourRow();
-    checkTreeRow();
     checkFourColumn();
     checkTreeColumn();
     updateScore();
-  }, 10000);
+  }, 100);
 });
