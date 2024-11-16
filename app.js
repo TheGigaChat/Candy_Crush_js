@@ -116,51 +116,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   //Checking for matches
-  function checkTreeRow() {
-    for (let i = 0; i < 62; i++) {
-      const row = [squares[i], squares[i + 1], squares[i + 2]];
-      const desiredColor = squares[i].style.backgroundImage;
-      const isBlank = squares[i].style.backgroundImage === "";
-
-      //Check if the i is an index of the invalid square
-      const doNotCheckIndexes = [
-        6, 7, 14, 15, 22, 23, 30, 31, 38, 39, 46, 47, 54, 55,
-      ];
-      if (doNotCheckIndexes.includes(i)) continue;
-
-      if (
-        row.every(
-          (square) => square.style.backgroundImage === desiredColor && !isBlank
-        )
-      ) {
-        row.forEach((square) => (square.style.backgroundImage = ""));
-        score += 3;
-      }
-    }
-  }
-  function checkFourRow() {
-    for (let i = 0; i < 61; i++) {
-      const row = [squares[i], squares[i + 1], squares[i + 2], squares[i + 3]];
-      const desiredColor = squares[i].style.backgroundImage;
-      const isBlank = squares[i].style.backgroundImage === "";
-
-      //Check if the i is an index of the invalid square
-      const doNotCheckIndexes = [
-        5, 6, 7, 13, 14, 15, 21, 22, 23, 29, 30, 31, 37, 38, 39, 45, 46, 47, 53,
-        54, 55,
-      ];
-      if (doNotCheckIndexes.includes(i)) continue;
-
-      if (
-        row.every(
-          (square) => square.style.backgroundImage === desiredColor && !isBlank
-        )
-      ) {
-        row.forEach((square) => (square.style.backgroundImage = ""));
-        score += 4;
-      }
-    }
-  }
   function checkRows() {
     //Instruction of the fuction
     //colors2[a, a, a, a, a, a, c, c, c] => i=0, count = 1
